@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>POKÉDEX</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>POKÉDEX</h1>
+      <nav class="barra-busca">
+        <form @submit.prevent="buscarPokemon">
+          <input type="text" placeholder="Qual Pokémon está procurando?" v-model="textoBusca">
+          <button type="submit"></button>
+        </form>
+      </nav>
+      <select v-model="tipoFiltro" @change="filtrarPokemons">
+        <option value="">Filtrar por tipo</option>
+        <option value="fire">Fogo</option>
+        <option value="water">Água</option>
+        <option value="grass">Grama</option>
+        <option value="electric">Elétrico</option>
+        <option value="dragon">Dragão</option>
+        <option value="bug">Inseto</option>
+      </select>
+    </header>
+
+    <div v-if="pokemons.length === 1" class="detalhes-pokemon">
+      <h2>{{ pokemons[0].name }} (#{{ pokemons[0].id }})</h2>
+      <img :src="pokemons[0].sprites.front_default" alt="Imagem do Pokémon">
+      <p><strong>Tipo:</strong> {{ pokemons[0].types.map(type => type.type.name).join(', ') }}</p>
+      <p><strong>Peso:</strong> {{ pokemons[0].weight / 10 }} kg</p>
+      <p><strong>Altura:</strong> {{ pokemons[0].height / 10 }} m</p>
+      <p><strong>Habilidades:</strong> {{ pokemons[0].abilities.map(ability => ability.ability.name).join(', ') }}</p>
+      <p><strong>Experiência base:</strong> {{ pokemons[0].base_experience }}</p>
+    </div>
+
+    <div v-else class="container-pokemon">
+      <ul>
+        <li v-for="pokemon in pokemons" :key="pokemon.id" :style="obterClasseTipo(pokemon)" class="cartao-pokemon">
+          <div>
+            <p>{{ pokemon.name }}</p>
+            <div class="imagem-pokemon">
+              <img :src="pokemon.sprites.other.showdown.front_default" alt="Imagem do Pokémon">
+            </div>
+            <p>{{ pokemon.types[0].type.name }}</p>
+            <p v-if="pokemon.types.length > 1">{{ pokemon.types[1].type.name }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="carregando">
+      <h1 v-if="loading">Carregando...</h1>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
